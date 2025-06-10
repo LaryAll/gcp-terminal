@@ -24,7 +24,7 @@
       height: 100vh;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 8px 8px 8px 8px;
+      padding: 8px;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -44,7 +44,6 @@
       50% { opacity: 0; }
     }
 
-    /* На больших экранах больше отступы */
     @media (min-width: 768px) {
       .terminal-container {
         padding: 16px;
@@ -65,22 +64,22 @@
   const cursor = document.querySelector(".cursor");
 
   const errorBlock = [
-    "*************** CRITICAL ERROR ***************",
-    "*                                            *",
-    "*  ERROR CODE     : QSR-404/∞               *",
-    "*  DESCRIPTION    : SYSTEM OFFLINE          *",
-    "*  NODE RESPONSE  : UNREACHABLE             *",
-    "*  TIMESTAMP      : [0000.∞.GSTD]           *",
-    "*                                            *",
-    "*  TICKET REF     : #GCP-α-0001             *",
-    "*  DISTRIBUTION   : ACTIVE                  *",
-    "*  PRIORITY       : FLOATING                *",
-    "*  NEXT UNIT      : UNASSIGNED              *",
-    "*                                            *",
-    "*  PLEASE STANDBY                           *",
-    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY) *",
-    "*                                            *",
-    "**********************************************"
+    "************** CRITICAL ERROR **************",
+    "*                                          *",
+    "*  ERROR CODE    : QSR-404/∞               *",
+    "*  DESCRIPTION   : SYSTEM OFFLINE          *",
+    "*  NODE RESPONSE : UNREACHABLE             *",
+    "*  TIMESTAMP     : [0000.∞.GSTD]           *",
+    "*                                          *",
+    "*  TICKET REF    : #GCP-α-0001             *",
+    "*  DISTRIBUTION  : ACTIVE                  *",
+    "*  PRIORITY      : FLOATING                *",
+    "*  NEXT UNIT     : UNASSIGNED              *",
+    "*                                          *",
+    "*  PLEASE STANDBY                          *",
+    "*  OPERATOR NOTIFIED (PROBABLY)            *",
+    "*                                          *",
+    "********************************************"
   ];
 
   const postLines = [
