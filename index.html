@@ -1,50 +1,97 @@
-<style>
-body {
-  background-color: #000000;
-  color: #00ff00;
-  font-family: "Courier New", Courier, monospace;
-  font-size: 18px;
-  padding: 40px;
-  line-height: 1.6;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GCP Terminal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: #33ff33;
+      font-family: 'Courier New', Courier, monospace;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
 
-.terminal {
-  max-width: 800px;
-  margin: 0 auto;
-  white-space: pre-wrap;
-}
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://raw.githubusercontent.com/jonykrause/frontend-snippets/main/animated-stars/stars.png') repeat;
+      animation: moveStars 90s linear infinite;
+      opacity: 0.1;
+      z-index: 0;
+    }
 
-.blink {
-  display: inline-block;
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink {
-  from, to {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-</style>
+    @keyframes moveStars {
+      0% { background-position: 0 0; }
+      100% { background-position: -10000px 5000px; }
+    }
+
+    .terminal {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.6);
+      white-space: pre-wrap;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .line {
+      display: block;
+      overflow: hidden;
+      border-right: 0.15em solid #33ff33;
+      white-space: nowrap;
+      animation: typing 5s steps(60, end), blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent }
+    }
+
+    .final-cursor {
+      display: inline-block;
+      animation: blink 1s step-end infinite;
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars"></div>
 
 <div class="terminal">
-[GЦП™] GALACTIC CONSOLE PANEL // ACCESS NODE Alpha/∞
+  <div class="line">
+[GCP™] GALACTIC CONSOLE PANEL // ACCESS NODE Alpha/∞
 
-> connect ...
-> verifying access level [user: UNREGISTERED CONTRACTOR]
+> connecting...
+> verifying access [user: UNREGISTERED CONTRACTOR]
 > loading interface...
 
-❌ SYSTEM OFFLINE  
+!! SYSTEM OFFLINE !!
 CODE: QSR-404/∞
 
-:: Тикет уже создан  
-:: Распределение в процессе  
-:: Статус: плавающая приоритизация между измерениями  
-:: Предполагаемый получатель: ваша (ничем не выдающаяся) команда
+:: Ticket has been generated  
+:: Distribution in progress  
+:: Status: floating priority across dimensions  
+:: Expected recipient: your (entirely average) team
 
-> Пожалуйста, ожидайте.  
-> Возможно, оператор ZL-42 сейчас приклеивает наклейки багов поверх других багов.  
-
-<span class="blink">_</span>
+> Please stand by.  
+> Operator ZL-42 might currently be reapplying bug labels over older ones.<span class="final-cursor">_</span>
+  </div>
 </div>
+
+</body>
+</html>
