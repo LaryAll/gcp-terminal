@@ -14,7 +14,7 @@
     body {
       background: #000;
       color: #33ff33;
-      font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+      font-family: 'Courier New', 'Monaco', monospace;
       line-height: 1.4;
       height: 100vh;
       overflow: hidden;
@@ -24,48 +24,15 @@
       height: 100vh;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 8px;
+      padding: 8px 8px 8px 8px;
       -webkit-overflow-scrolling: touch;
     }
 
     .terminal {
-      font-size: 12px;
+      font-size: clamp(10px, 2.8vw, 16px);
       white-space: pre-wrap;
       word-wrap: break-word;
-      min-height: 100vh;
-    }
-
-    /* Адаптивная таблица */
-    .error-box {
-      border: 1px solid #33ff33;
-      padding: 8px;
-      margin: 16px 0;
-      background: rgba(51, 255, 51, 0.05);
-      font-size: 10px;
-      line-height: 1.2;
-    }
-
-    .error-title {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 8px;
-      font-size: 12px;
-    }
-
-    .error-field {
-      margin: 4px 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .field-label {
-      color: #66ff66;
-      font-weight: bold;
-    }
-
-    .field-value {
-      margin-left: 8px;
-      color: #33ff33;
+      text-align: left;
     }
 
     .cursor {
@@ -77,31 +44,10 @@
       50% { opacity: 0; }
     }
 
-    /* Десктоп версия */
+    /* На больших экранах больше отступы */
     @media (min-width: 768px) {
       .terminal-container {
-        padding: 20px;
-      }
-      
-      .terminal {
-        font-size: 16px;
-        max-width: 1000px;
-        margin: 0 auto;
-      }
-
-      .error-box {
-        font-size: 14px;
         padding: 16px;
-      }
-
-      .error-title {
-        font-size: 16px;
-      }
-    }
-
-    @media (min-width: 1200px) {
-      .terminal {
-        font-size: 18px;
       }
     }
   </style>
@@ -118,39 +64,21 @@
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
 
-  // Мобильная версия ошибки
-  const mobileError = [
-    "CRITICAL ERROR",
-    "",
-    "ERROR CODE: QSR-404/∞",
-    "STATUS: SYSTEM OFFLINE",
-    "NODE: UNRESPONSIVE",
-    "",
-    "TICKET: #GCP-α-0001",
-    "PRIORITY: FLOATING",
-    "ASSIGNED: PENDING",
-    "",
-    "PLEASE STANDBY",
-    "OPERATOR NOTIFIED (PROBABLY)",
-    ""
-  ];
-
-  // Десктопная версия (ASCII-таблица)
-  const desktopError = [
+  const errorBlock = [
     "*************** CRITICAL ERROR ***************",
     "*                                            *",
-    "*  ERROR CODE     : QSR-404/∞                *", 
-    "*  DESCRIPTION    : SYSTEM OFFLINE           *",
-    "*  NODE RESPONSE  : UNREACHABLE              *",
-    "*  TIMESTAMP      : [0000.∞.GSTD]            *",
+    "*  ERROR CODE     : QSR-404/∞               *",
+    "*  DESCRIPTION    : SYSTEM OFFLINE          *",
+    "*  NODE RESPONSE  : UNREACHABLE             *",
+    "*  TIMESTAMP      : [0000.∞.GSTD]           *",
     "*                                            *",
-    "*  TICKET REF     : #GCP-α-0001              *",
-    "*  DISTRIBUTION   : ACTIVE                   *",
-    "*  PRIORITY       : FLOATING                 *",
-    "*  NEXT UNIT      : UNASSIGNED               *",
+    "*  TICKET REF     : #GCP-α-0001             *",
+    "*  DISTRIBUTION   : ACTIVE                  *",
+    "*  PRIORITY       : FLOATING                *",
+    "*  NEXT UNIT      : UNASSIGNED              *",
     "*                                            *",
-    "*  PLEASE STANDBY                            *",
-    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)  *",
+    "*  PLEASE STANDBY                           *",
+    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY) *",
     "*                                            *",
     "**********************************************"
   ];
@@ -163,7 +91,7 @@
     "> CONNECTION STALLED...",
     "",
     "> SYSTEM ENTERED OBSERVATION MODE",
-    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION", 
+    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION",
     "> EST. RECIPIENT: your (unremarkable) team",
     "",
     "> Awaiting Operator ZL-42...",
@@ -173,17 +101,13 @@
     ""
   ];
 
-  // Определяем мобильное устройство
-  const isMobile = window.innerWidth < 768;
-  const errorLines = isMobile ? mobileError : desktopError;
-
-  let currentLine = 0;
+  let errorLine = 0;
 
   function printErrorLine() {
-    if (currentLine < errorLines.length) {
-      insertLine(errorLines[currentLine]);
-      currentLine++;
-      setTimeout(printErrorLine, 180 + Math.random() * 320);
+    if (errorLine < errorBlock.length) {
+      insertLine(errorBlock[errorLine]);
+      errorLine++;
+      setTimeout(printErrorLine, 180 + Math.random() * 120);
     } else {
       setTimeout(startTyping, 600);
     }
@@ -224,7 +148,6 @@
     container.scrollTop = container.scrollHeight;
   }
 
-  // Запуск
   printErrorLine();
 </script>
 
