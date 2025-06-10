@@ -10,21 +10,31 @@
       margin: 0;
       padding: 0;
     }
-    body {
+    html, body {
       background: #000;
       color: #33ff33;
       font-family: 'Courier New', 'Monaco', monospace;
       line-height: 1;
+      height: 100%;
+      overflow: hidden;
+    }
+    .terminal-wrapper {
+      position: relative;
+      width: 100vw;
       height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     .terminal-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
       height: 100vh;
-      overflow-y: auto;
+      overflow-y: scroll;
       overflow-x: hidden;
       padding: 8px;
-      -webkit-overflow-scrolling: touch;
-      width: 100%;
+      padding-right: 25px;
+      box-sizing: content-box;
     }
     .terminal {
       font-size: 14px;
@@ -32,6 +42,7 @@
       word-wrap: break-word;
       text-align: left;
       width: 100%;
+      padding-right: 8px;
     }
     .error-block {
       font-family: 'Courier New', 'Monaco', monospace;
@@ -46,8 +57,6 @@
       line-height: 1.0;
       margin-top: 1em;
       margin-bottom: 1em;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
     }
     .error-line {
       display: block;
@@ -73,6 +82,7 @@
       }
       .terminal-container {
         padding: 4px;
+        padding-right: 25px;
       }
     }
     
@@ -84,9 +94,11 @@
   </style>
 </head>
 <body>
-<div class="terminal-container">
-  <div class="terminal" id="terminal">
-    <span class="cursor">_</span>
+<div class="terminal-wrapper">
+  <div class="terminal-container">
+    <div class="terminal" id="terminal">
+      <span class="cursor">_</span>
+    </div>
   </div>
 </div>
 <script>
@@ -97,35 +109,35 @@
     "COPYRIGHT (C) 3108 UNIVERSAL TECH CORP. ALL PROCEDURES EVENTUALLY FAIL™",
     "------------------------------------------------------------",
     " ",
-    "> CONNECTING TO CENTRAL SUPPORT AXIS............ OK",
-    "> PINGING CENTRAL DATA ORACLE................... 127ms",
+    "> CONNECTING TO CENTRAL SUPPORT AXIS.............. OK",
+    "> PINGING CENTRAL DATA ORACLE..................... 127ms",
     "> INITIALIZING BIG ABSTRACT GLUCOPEDIA [B.A.G.]... LOADED",
     "> LOADING CORE DRIVERS:",
-    "    — Quantum Printer Driver.................. OK",
-    "    — Logical Compliance Layer................ OK",
-    "    — Empathy Processing Unit................. OK",
+    "    — Quantum Printer Driver................ OK",
+    "    — Logical Compliance Layer.............. OK",
+    "    — Empathy Processing Unit............... OK",
     "> MOUNTING PERCEPTION VOLUMES................... PARTIALLY",
     "> RESYNCHRONIZING TEMPORAL CACHE................... FAILED",
     "> STARTING BACKGROUND SERVICES..................... FAILED",
     ""
   ];
   const errorBlock = [
-    "********************** CRITICAL ERROR **********************",
-    "*                                                          *",
-    "*  ERROR CODE     : QSR-404/∞                              *",
-    "*  DESCRIPTION    : SYSTEM OFFLINE                         *",
-    "*  NODE RESPONSE  : UNREACHABLE                            *",
-    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]        *",
-    "*                                                          *",
-    "*  TICKET REF     : #GCP-α-0001                            *",
-    "*  DISTRIBUTION   : ACTIVE                                 *",
-    "*  PRIORITY       : FLOATING                               *",
-    "*  NEXT UNIT      : UNASSIGNED                             *",
-    "*                                                          *",
-    "*  PLEASE STANDBY                                          *",
-    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)                *",
-    "*                                                          *",
-    "************************************************************"
+    "*********************** CRITICAL ERROR ***********************",
+    "*                                                            *",
+    "*  ERROR CODE     : QSR-404/∞                                *",
+    "*  DESCRIPTION    : SYSTEM OFFLINE                           *",
+    "*  NODE RESPONSE  : UNREACHABLE                              *",
+    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]          *",
+    "*                                                            *",
+    "*  TICKET REF     : #GCP-α-0001                              *",
+    "*  DISTRIBUTION   : ACTIVE                                   *",
+    "*  PRIORITY       : FLOATING                                 *",
+    "*  NEXT UNIT      : UNASSIGNED                               *",
+    "*                                                            *",
+    "*  PLEASE STANDBY                                            *",
+    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)                  *",
+    "*                                                            *",
+    "**************************************************************"
   ];
   const postLines = [
     "",
