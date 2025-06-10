@@ -1,61 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>GCP Terminal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html, body {
-      margin: 0;
+    body {
       background: #000;
       color: #33ff33;
-      font-family: 'Courier New', monospace;
-      line-height: 1.6;
-      overflow: hidden;
+      font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+      line-height: 1.4;
       height: 100vh;
+      overflow: hidden;
     }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .terminal-wrapper {
-      flex-grow: 1;
+    .terminal-container {
+      height: 100vh;
       overflow-y: auto;
-      padding: 16px;
+      overflow-x: hidden;
+      padding: 8px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .terminal {
-      font-size: clamp(12px, 3.5vw, 16px);
+      font-size: 12px;
       white-space: pre-wrap;
-      word-break: break-word;
-      max-width: 100%;
+      word-wrap: break-word;
+      min-height: 100vh;
+    }
+
+    /* Адаптивная таблица */
+    .error-box {
+      border: 1px solid #33ff33;
+      padding: 8px;
+      margin: 16px 0;
+      background: rgba(51, 255, 51, 0.05);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .error-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .error-field {
+      margin: 4px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-label {
+      color: #66ff66;
+      font-weight: bold;
+    }
+
+    .field-value {
+      margin-left: 8px;
+      color: #33ff33;
     }
 
     .cursor {
       display: inline-block;
-      font-weight: bold;
       animation: blink 1s step-end infinite;
     }
 
     @keyframes blink {
       50% { opacity: 0; }
     }
+
+    /* Десктоп версия */
+    @media (min-width: 768px) {
+      .terminal-container {
+        padding: 20px;
+      }
+      
+      .terminal {
+        font-size: 16px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .error-box {
+        font-size: 14px;
+        padding: 16px;
+      }
+
+      .error-title {
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .terminal {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="terminal-wrapper">
-    <div class="terminal" id="terminal">
-      <span class="cursor">_</span>
-    </div>
+<div class="terminal-container">
+  <div class="terminal" id="terminal">
+    <span class="cursor">_</span>
   </div>
 </div>
 
@@ -63,10 +118,28 @@
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
 
-  const errorBlock = [
+  // Мобильная версия ошибки
+  const mobileError = [
+    "CRITICAL ERROR",
+    "",
+    "ERROR CODE: QSR-404/∞",
+    "STATUS: SYSTEM OFFLINE",
+    "NODE: UNRESPONSIVE",
+    "",
+    "TICKET: #GCP-α-0001",
+    "PRIORITY: FLOATING",
+    "ASSIGNED: PENDING",
+    "",
+    "PLEASE STANDBY",
+    "OPERATOR NOTIFIED (PROBABLY)",
+    ""
+  ];
+
+  // Десктопная версия (ASCII-таблица)
+  const desktopError = [
     "*************** CRITICAL ERROR ***************",
     "*                                            *",
-    "*  ERROR CODE     : QSR-404/∞                *",
+    "*  ERROR CODE     : QSR-404/∞                *", 
     "*  DESCRIPTION    : SYSTEM OFFLINE           *",
     "*  NODE RESPONSE  : UNREACHABLE              *",
     "*  TIMESTAMP      : [0000.∞.GSTD]            *",
@@ -82,58 +155,62 @@
     "**********************************************"
   ];
 
-  const postTyping = [
+  const postLines = [
     "",
     "> INITIALIZE SECTOR K13...",
     "> CONNECTING TO GALACTIC CONSOLE PANEL...",
-    "> VERIFYING ACCESS LEVEL [user: UNREGISTERED CONTRACTOR]",
+    "> VERIFYING ACCESS [user: UNREGISTERED CONTRACTOR]",
     "> CONNECTION STALLED...",
     "",
     "> SYSTEM ENTERED OBSERVATION MODE",
-    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION",
-    "> EST. RECIPIENT: your (unremarkable but persistent) team",
+    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION", 
+    "> EST. RECIPIENT: your (unremarkable) team",
     "",
-    "> Awaiting manual handling by Operator ZL-42...",
-    "> For infinite delay, submit Form 9/B manually",
+    "> Awaiting Operator ZL-42...",
+    "> For delays, submit Form 9/B",
     "",
-    "> Likelihood of resolution: ¯\\_(ツ)_/¯",
+    "> Resolution probability: ¯\\_(ツ)_/¯",
     ""
   ];
 
-  let errorLine = 0;
+  // Определяем мобильное устройство
+  const isMobile = window.innerWidth < 768;
+  const errorLines = isMobile ? mobileError : desktopError;
 
-  function printErrorBlock() {
-    if (errorLine < errorBlock.length) {
-      insertLine(errorBlock[errorLine]);
-      errorLine++;
-      setTimeout(printErrorBlock, 170 + Math.random() * 300);
+  let currentLine = 0;
+
+  function printErrorLine() {
+    if (currentLine < errorLines.length) {
+      insertLine(errorLines[currentLine]);
+      currentLine++;
+      setTimeout(printErrorLine, 180 + Math.random() * 320);
     } else {
       setTimeout(startTyping, 600);
     }
   }
 
-  let postLine = 0;
+  let postIndex = 0;
   let charIndex = 0;
 
   function startTyping() {
-    if (postLine >= postTyping.length) return;
-    const line = postTyping[postLine];
+    if (postIndex >= postLines.length) return;
+    
+    const line = postLines[postIndex];
     if (charIndex < line.length) {
       insertChar(line.charAt(charIndex));
       charIndex++;
-      const delay = 60 + Math.random() * 50;
-      setTimeout(startTyping, delay);
+      setTimeout(startTyping, 70 + Math.random() * 40);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
-      postLine++;
+      postIndex++;
       charIndex = 0;
-      setTimeout(startTyping, 350);
+      setTimeout(startTyping, 400);
     }
     scrollToBottom();
   }
 
-  function insertLine(str) {
-    terminal.insertBefore(document.createTextNode(str), cursor);
+  function insertLine(text) {
+    terminal.insertBefore(document.createTextNode(text), cursor);
     terminal.insertBefore(document.createElement("br"), cursor);
     scrollToBottom();
   }
@@ -143,11 +220,12 @@
   }
 
   function scrollToBottom() {
-    const wrapper = document.querySelector('.terminal-wrapper');
-    wrapper.scrollTop = wrapper.scrollHeight;
+    const container = document.querySelector('.terminal-container');
+    container.scrollTop = container.scrollHeight;
   }
 
-  printErrorBlock();
+  // Запуск
+  printErrorLine();
 </script>
 
 </body>
