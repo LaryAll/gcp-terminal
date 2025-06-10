@@ -56,11 +56,15 @@
       line-height: 1.0 !important;
       margin: 0;
       padding: 0;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
     .error-line {
       display: block;
       width: max-content;
       line-height: inherit;
+      max-width: 100%;
+      overflow-wrap: break-word;
     }
     .cursor {
       display: inline-block;
@@ -72,6 +76,21 @@
     @media (min-width: 768px) {
       .terminal-container {
         padding: 16px;
+      }
+    }
+    @media (max-width: 480px) {
+      .error-line {
+        width: 100% !important;
+        max-width: 100% !important;
+        word-break: break-all;
+      }
+      .error-table .error-line {
+        width: 100% !important;
+        max-width: 100% !important;
+        word-break: break-all;
+      }
+      .terminal {
+        font-size: clamp(8px, 3.5vw, 14px);
       }
     }
   </style>
@@ -94,9 +113,9 @@
     "> PINGING CENTRAL DATA ORACLE...................... 127ms",
     "> INITIALIZING BIG ABSTRACT GLUCOPEDIA [B.A.G.].... LOADED",
     "> LOADING CORE DRIVERS:",
-    "    — Quantum Printer Driver.................. OK",
-    "    — Logical Compliance Layer................ OK",
-    "    — Empathy Processing Unit................. OK",
+    "    — Quantum Printer Driver............... OK",
+    "    — Logical Compliance Layer............. OK",
+    "    — Empathy Processing Unit.............. OK",
     "> MOUNTING PERCEPTION VOLUMES...................... PARTIALLY",
     "> RESYNCHRONIZING TEMPORAL CACHE................... FAILED",
     "> STARTING BACKGROUND SERVICES..................... FAILED",
@@ -142,7 +161,6 @@
   let blockDiv;
   let errorDiv;
   let glucopediaWait = false;
-  
   function printInitLine() {
     if (initLine === 0) {
       blockDiv = document.createElement('div');
@@ -173,14 +191,12 @@
       setTimeout(printErrorTable, 2000);
     }
   }
-  
   function printErrorTable() {
     if (errorLine === 0) {
       errorDiv = document.createElement('div');
       errorDiv.className = 'error-table';
       terminal.insertBefore(errorDiv, cursor);
     }
-    
     if (errorLine < errorBlock.length) {
       const lineDiv = document.createElement('div');
       lineDiv.className = 'error-line';
@@ -193,7 +209,6 @@
       setTimeout(startTyping, 1200);
     }
   }
-  
   let postIndex = 0;
   let charIndex = 0;
   function startTyping() {
@@ -209,7 +224,7 @@
       charIndex = 0;
       setTimeout(startTyping, 600);
     }
-    scrollToBottom(); 
+    scrollToBottom();
   }
   function insertChar(char) {
     cursor.before(char);
