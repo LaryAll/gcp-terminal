@@ -240,6 +240,73 @@
   }
   
   printInitLine();
+
+let waitingForOpen = false;
+
+const contextLines = [
+  "> ACCESSING CONTEXTUAL BACKUP...",
+  "> VIEWING /bag/legacy_boot/docs/internal_training_guide.txt",
+  "> OPEN FILE? TAP OR HIT ENTER"
+];
+
+const guideLines = [
+  "//-------------------------------------------------------------------------//",
+  "::                   GALACTIC SUPPORT FIELD GUIDE                       ::",
+  "::             Extracted from BAG [Big Abstract Glucopedia]            ::",
+  "//-------------------------------------------------------------------------//",
+  "",
+  "\"Если баг не подтверждён, но влияет на реальность —",
+  "открыть тикет. На всякий случай.\"",
+  "",
+  "— Устав ГЦП™. Параграф 0 (отредактирован во сне)",
+  "",
+  "> ЧТО ЗДЕСЬ ПРОИСХОДИТ?",
+  "Вы — команда технической поддержки.",
+  "Да. Но не обычная.",
+  "Вы — GalaxyFix™, внешнее подрядное подразделение ГЦП™...",
+  "... (и так далее — продолжи строки по своему тексту)",
+  ""
+];
+
+function showContextPrompt() {
+  contextLines.forEach(line => {
+    const div = document.createElement('div');
+    div.textContent = line;
+    terminal.insertBefore(div, cursor);
+  });
+  scrollToBottom();
+  waitingForOpen = true;
+}
+
+function displayGuideLines(index = 0) {
+  if (index >= guideLines.length) return;
+  const div = document.createElement('div');
+  div.textContent = guideLines[index];
+  terminal.insertBefore(div, cursor);
+  scrollToBottom();
+  setTimeout(() => displayGuideLines(index + 1), 80 + Math.random() * 80);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (waitingForOpen && (e.key === 'Enter' || e.keyCode === 13)) {
+    openGuide();
+  }
+});
+
+window.addEventListener('click', () => {
+  if (waitingForOpen) openGuide();
+});
+
+function openGuide() {
+  waitingForOpen = false;
+  terminal.innerHTML = '';
+  terminal.appendChild(cursor);
+  scrollToBottom();
+  setTimeout(() => displayGuideLines(), 800);
+}
+
+
+  
 </script>
 </body>
 </html>
