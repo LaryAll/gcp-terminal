@@ -1,97 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
   <title>GCP Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    html, body {
       margin: 0;
-      padding: 0;
-      background-color: black;
-      color: #33ff33;
+      padding: 40px;
+      background-color: #000000;
+      color: #33FF33;
       font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      line-height: 1.6;
+      white-space: pre-wrap;
       height: 100vh;
       overflow: hidden;
       display: flex;
       justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    .stars {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: transparent url('https://raw.githubusercontent.com/jonykrause/frontend-snippets/main/animated-stars/stars.png') repeat;
-      animation: moveStars 90s linear infinite;
-      opacity: 0.1;
-      z-index: 0;
-    }
-
-    @keyframes moveStars {
-      0% { background-position: 0 0; }
-      100% { background-position: -10000px 5000px; }
+      align-items: flex-start;
     }
 
     .terminal {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      padding: 40px;
-      background: rgba(0, 0, 0, 0.6);
-      white-space: pre-wrap;
-      font-size: 16px;
-      line-height: 1.6;
+      max-width: 1000px;
     }
 
-    .line {
-      display: block;
-      overflow: hidden;
-      border-right: 0.15em solid #33ff33;
-      white-space: nowrap;
-      animation: typing 5s steps(60, end), blink 0.75s step-end infinite;
-    }
-
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 100% }
+    .cursor {
+      display: inline-block;
+      font-weight: bold;
+      animation: blink 1s step-end infinite;
     }
 
     @keyframes blink {
-      50% { border-color: transparent }
-    }
-
-    .final-cursor {
-      display: inline-block;
-      animation: blink 1s step-end infinite;
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-<div class="stars"></div>
+<div class="terminal" id="terminal"></div>
+<audio id="keystroke" src="https://assets.mixkit.co/sfx/preview/mixkit-typewriter-click-1120.mp3" preload="auto"></audio>
 
-<div class="terminal">
-  <div class="line">
-[GCP™] GALACTIC CONSOLE PANEL // ACCESS NODE Alpha/∞
+<script>
+  const terminal = document.getElementById("terminal");
+  const audio = document.getElementById("keystroke");
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+  cursor.textContent = "_";
+  terminal.appendChild(cursor);
 
-> connecting...
-> verifying access [user: UNREGISTERED CONTRACTOR]
-> loading interface...
+  const errorBlock = [
+    "*********************** CRITICAL ERROR ***********************",
+    "*                                                            *",
+    "*  ERROR CODE     : QSR-404/∞                                *",
+    "*  DESCRIPTION    : SYSTEM OFFLINE-CONTROL NODE UNRESPONSIVE *",
+    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]          *",
+    "*                                                            *",
+    "*  TICKET REF     : #GCP-α-0001                              *",
+    "*  DISTRIBUTION   : ACTIVE                                   *",
+    "*  PRIORITY       : FLOATING                                 *",
+    "*  NEXT UNIT      : UNASSIGNED                               *",
+    "*                                                            *",
+    "*  PLEASE STANDBY                                            *",
+    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)                  *",
+    "*                                                            *",
+    "**************************************************************"
+  ];
 
-!! SYSTEM OFFLINE !!
-CODE: QSR-404/∞
+  const postTyping = [
+    "",
+    "> INITIALIZE SECTOR K13...",
+    "> CONNECTING TO GALACTIC CONSOLE PANEL...",
+    "> VERIFYING ACCESS LEVEL [user: UNREGISTERED CONTRACTOR]",
+    "> CONNECTION STALLED...",
+    "",
+    "> SYSTEM HAS ENTERED OBSERVATION MODE",
+    "> TICKET #GLX-001 HAS BEEN FLAGGED FOR REDISTRIBUTION",
+    "> ESTIMATED RECEIVER: your (unremarkable but persistent) team",
+    "",
+    "> Please await manual assignment from Operator ZL-42",
+    "> In case of eternal delay, consult Form Processing Entity 9/B",
+    "",
+    "> Likelihood of successful resolution: ¯\\_(ツ)_/¯",
+    "",
+    ""
+  ];
 
-:: Ticket has been generated  
-:: Distribution in progress  
-:: Status: floating priority across dimensions  
-:: Expected recipient: your (entirely average) team
+  let errorLineIndex = 0;
 
-> Please stand by.  
-> Operator ZL-42 might currently be reapplying bug labels over older ones.<span class="final-cursor">_</span>
-  </div>
-</div>
+  function showErrorBlockLine() {
+    if (errorLineIndex < errorBlock.length) {
+      terminal.insertBefore(document.createTextNode(errorBlock[errorLineIndex]), cursor);
+      terminal.insertBefore(document.createElement("br"), cursor);
+      errorLineIndex++;
+      const delay = 150 + Math.random() * 150;  // 150–500ms
+      setTimeout(showErrorBlockLine, delay);
+    } else {
+      setTimeout(startPostTyping, 900);
+    }
+  }
 
+  let postLine = 0;
+  let postChar = 0;
+
+  function startPostTyping() {
+    if (postLine >= postTyping.length) return;
+
+    const line = postTyping[postLine];
+    if (postChar < line.length) {
+      cursor.before(line.charAt(postChar));
+      postChar++;
+
+      try {
+        audio.currentTime = 0;
+        audio.play();
+      } catch (e) {}
+
+      const delay = 40 + Math.random() * 25;  // ~40–65ms пер символ
+      setTimeout(startPostTyping, delay);
+    } else {
+      terminal.insertBefore(document.createElement("br"), cursor);
+      postLine++;
+      postChar = 0;
+      setTimeout(startPostTyping, 300);
+    }
+  }
+
+  showErrorBlockLine();
+</script>
 </body>
 </html>
