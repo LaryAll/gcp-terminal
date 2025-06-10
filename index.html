@@ -10,7 +10,6 @@
       margin: 0;
       padding: 0;
     }
-
     body {
       background: #000;
       color: #33ff33;
@@ -19,7 +18,6 @@
       height: 100vh;
       overflow: hidden;
     }
-
     .terminal-container {
       height: 100vh;
       overflow-y: auto;
@@ -27,23 +25,31 @@
       padding: 8px;
       -webkit-overflow-scrolling: touch;
     }
-
     .terminal {
       font-size: clamp(10px, 2.8vw, 16px);
       white-space: pre-wrap;
       word-wrap: break-word;
       text-align: left;
     }
-
+    .error-block {
+      font-family: 'Courier New', 'Monaco', monospace;
+      white-space: pre;
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: start;
+      line-height: inherit;
+    }
+    .error-line {
+      display: block;
+      width: max-content;
+    }
     .cursor {
       display: inline-block;
       animation: blink 1s step-end infinite;
     }
-
     @keyframes blink {
       50% { opacity: 0; }
     }
-
     @media (min-width: 768px) {
       .terminal-container {
         padding: 16px;
@@ -52,36 +58,32 @@
   </style>
 </head>
 <body>
-
 <div class="terminal-container">
   <div class="terminal" id="terminal">
     <span class="cursor">_</span>
   </div>
 </div>
-
 <script>
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
-
   const errorBlock = [
-"************** CRITICAL ERROR **************",
-    "*                                          *",
-    "*  ERROR CODE    : QSR-404/∞               *",
-    "*  DESCRIPTION   : SYSTEM OFFLINE          *",
-    "*  NODE RESPONSE : UNREACHABLE             *",
-    "*  TIMESTAMP     : [0000.∞.GSTD]           *",
-    "*                                          *",
-    "*  TICKET REF    : #GCP-α-0001             *",
-    "*  DISTRIBUTION  : ACTIVE                  *",
-    "*  PRIORITY      : FLOATING                *",
-    "*  NEXT UNIT     : UNASSIGNED              *",
-    "*                                          *",
-    "*  PLEASE STANDBY                          *",
-    "*  OPERATOR NOTIFIED (PROBABLY)            *",
-    "*                                          *",
-    "********************************************"
+    "******************** CRITICAL ERROR ********************",
+    "*                                                      *",
+    "*  ERROR CODE     : QSR-404/∞                          *",
+    "*  DESCRIPTION    : SYSTEM OFFLINE                     *",
+    "*  NODE RESPONSE  : UNREACHABLE                        *",
+    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]    *",
+    "*                                                      *",
+    "*  TICKET REF     : #GCP-α-0001                        *",
+    "*  DISTRIBUTION   : ACTIVE                             *",
+    "*  PRIORITY       : FLOATING                           *",
+    "*  NEXT UNIT      : UNASSIGNED                         *",
+    "*                                                      *",
+    "*  PLEASE STANDBY                                      *",
+    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)            *",
+    "*                                                      *",
+    "********************************************************"
   ];
-
   const postLines = [
     "",
     "> INITIALIZE SECTOR K13...",
@@ -99,25 +101,31 @@
     "> Resolution probability: ¯\\_(ツ)_/¯",
     ""
   ];
-
   let errorLine = 0;
-
   function printErrorLine() {
     if (errorLine < errorBlock.length) {
-      insertLine(errorBlock[errorLine]);
-      errorLine++;
-      setTimeout(printErrorLine, 180 + Math.random() * 120);
-    } else {
-      setTimeout(startTyping, 600);
+      if (errorLine === 0) {
+        const blockDiv = document.createElement('div');
+        blockDiv.className = 'error-block';
+        
+        errorBlock.forEach(line => {
+          const lineDiv = document.createElement('div');
+          lineDiv.className = 'error-line';
+          lineDiv.textContent = line;
+          blockDiv.appendChild(lineDiv);
+        });
+        
+        terminal.insertBefore(blockDiv, cursor);
+        terminal.insertBefore(document.createElement("br"), cursor);
+        setTimeout(startTyping, 600);
+      }
     }
+    scrollToBottom();
   }
-
   let postIndex = 0;
   let charIndex = 0;
-
   function startTyping() {
     if (postIndex >= postLines.length) return;
-    
     const line = postLines[postIndex];
     if (charIndex < line.length) {
       insertChar(line.charAt(charIndex));
@@ -131,24 +139,14 @@
     }
     scrollToBottom();
   }
-
-  function insertLine(text) {
-    terminal.insertBefore(document.createTextNode(text), cursor);
-    terminal.insertBefore(document.createElement("br"), cursor);
-    scrollToBottom();
-  }
-
   function insertChar(char) {
     cursor.before(char);
   }
-
   function scrollToBottom() {
     const container = document.querySelector('.terminal-container');
     container.scrollTop = container.scrollHeight;
   }
-
   printErrorLine();
 </script>
-
 </body>
 </html>
