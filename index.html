@@ -14,7 +14,7 @@
       background: #000;
       color: #33ff33;
       font-family: 'Courier New', 'Monaco', monospace;
-      line-height: 1.4;
+      line-height: 1;
       height: 100vh;
       overflow: hidden;
     }
@@ -37,11 +37,30 @@
       display: grid;
       grid-template-columns: 1fr;
       justify-items: start;
-      line-height: inherit;
+      line-height: 1.2;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+    .error-table {
+      font-family: 'Courier New', 'Monaco', monospace;
+      white-space: pre;
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: start;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+    .error-table .error-line {
+      display: block;
+      width: max-content;
+      line-height: 1.0 !important;
+      margin: 0;
+      padding: 0;
     }
     .error-line {
       display: block;
       width: max-content;
+      line-height: inherit;
     }
     .cursor {
       display: inline-block;
@@ -66,6 +85,23 @@
 <script>
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
+  const initBlock = [
+    "GALACTIC SUPPORT CENTER v2.1.4",
+    "COPYRIGHT (C) 3108 UNIVERSAL TECH CORP. ALL PROCEDURES EVENTUALLY FAIL™",
+    "------------------------------------------------------------",
+    " ",
+    "> CONNECTING TO CENTRAL SUPPORT AXIS............... OK",
+    "> PINGING CENTRAL DATA ORACLE...................... 127ms",
+    "> INITIALIZING BIG ABSTRACT GLUCOPEDIA [B.A.G.].... LOADED",
+    "> LOADING CORE DRIVERS:",
+    "    — Quantum Printer Driver.................. OK",
+    "    — Logical Compliance Layer................ OK",
+    "    — Empathy Processing Unit................. OK",
+    "> MOUNTING PERCEPTION VOLUMES...................... PARTIALLY",
+    "> RESYNCHRONIZING TEMPORAL CACHE................... FAILED",
+    "> STARTING BACKGROUND SERVICES..................... FAILED",
+    ""
+  ];
   const errorBlock = [
     "******************** CRITICAL ERROR ********************",
     "*                                                      *",
@@ -92,7 +128,7 @@
     "> CONNECTION STALLED...",
     "",
     "> SYSTEM ENTERED OBSERVATION MODE",
-    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION",
+    "> TICKET #GLX-000 FLAGGED FOR REDISTRIBUTION",
     "> EST. RECIPIENT: your (unremarkable) team",
     "",
     "> Awaiting Operator ZL-42...",
@@ -101,27 +137,63 @@
     "> Resolution probability: ¯\\_(ツ)_/¯",
     ""
   ];
+  let initLine = 0;
   let errorLine = 0;
-  function printErrorLine() {
-    if (errorLine < errorBlock.length) {
-      if (errorLine === 0) {
-        const blockDiv = document.createElement('div');
-        blockDiv.className = 'error-block';
-        
-        errorBlock.forEach(line => {
-          const lineDiv = document.createElement('div');
-          lineDiv.className = 'error-line';
-          lineDiv.textContent = line;
-          blockDiv.appendChild(lineDiv);
-        });
-        
-        terminal.insertBefore(blockDiv, cursor);
-        terminal.insertBefore(document.createElement("br"), cursor);
-        setTimeout(startTyping, 600);
-      }
+  let blockDiv;
+  let errorDiv;
+  let glucopediaWait = false;
+  
+  function printInitLine() {
+    if (initLine === 0) {
+      blockDiv = document.createElement('div');
+      blockDiv.className = 'error-block';
+      terminal.insertBefore(blockDiv, cursor);
     }
-    scrollToBottom();
+    if (initLine < initBlock.length) {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'error-line';
+      lineDiv.textContent = initBlock[initLine];
+      blockDiv.appendChild(lineDiv);
+      if (initBlock[initLine].includes("GLUCOPEDIA") && !glucopediaWait) {
+        glucopediaWait = true;
+        initLine++;
+        scrollToBottom();
+        setTimeout(printInitLine, 5000);
+        return;
+      }
+      initLine++;
+      scrollToBottom();
+      let delay = 300 + Math.random() * 800;
+      if (initLine <= 3) delay = 600 + Math.random() * 400;
+      if (initBlock[initLine - 1] && initBlock[initLine - 1].includes("FAILED")) {
+        delay = 1200 + Math.random() * 800;
+      }
+      setTimeout(printInitLine, delay);
+    } else {
+      setTimeout(printErrorTable, 2000);
+    }
   }
+  
+  function printErrorTable() {
+    if (errorLine === 0) {
+      errorDiv = document.createElement('div');
+      errorDiv.className = 'error-table';
+      terminal.insertBefore(errorDiv, cursor);
+    }
+    
+    if (errorLine < errorBlock.length) {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'error-line';
+      lineDiv.textContent = errorBlock[errorLine];
+      errorDiv.appendChild(lineDiv);
+      errorLine++;
+      scrollToBottom();
+      setTimeout(printErrorTable, 150 + Math.random() * 200);
+    } else {
+      setTimeout(startTyping, 1200);
+    }
+  }
+  
   let postIndex = 0;
   let charIndex = 0;
   function startTyping() {
@@ -130,14 +202,14 @@
     if (charIndex < line.length) {
       insertChar(line.charAt(charIndex));
       charIndex++;
-      setTimeout(startTyping, 70 + Math.random() * 40);
+      setTimeout(startTyping, 70 + Math.random() * 50);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
       postIndex++;
       charIndex = 0;
-      setTimeout(startTyping, 400);
+      setTimeout(startTyping, 600);
     }
-    scrollToBottom();
+    scrollToBottom(); 
   }
   function insertChar(char) {
     cursor.before(char);
@@ -146,7 +218,7 @@
     const container = document.querySelector('.terminal-container');
     container.scrollTop = container.scrollHeight;
   }
-  printErrorLine();
+  printInitLine();
 </script>
 </body>
 </html>
