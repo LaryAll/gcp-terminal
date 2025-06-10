@@ -98,10 +98,10 @@
       terminal.insertBefore(document.createTextNode(errorBlock[errorLineIndex]), cursor);
       terminal.insertBefore(document.createElement("br"), cursor);
       errorLineIndex++;
-      const delay = 150 + Math.random() * 150;
+      const delay = 150 + Math.random() * 300;
       setTimeout(showErrorBlockLine, delay);
     } else {
-      setTimeout(startPostTyping, 600);
+      setTimeout(startPostTyping, 990);
     }
   }
 
@@ -122,7 +122,7 @@
         } catch (e) {}
       }
 
-      const delay = 40 + Math.random() * 25;
+      const delay = 40 + Math.random() * 35;
       setTimeout(startPostTyping, delay);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
