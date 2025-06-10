@@ -10,6 +10,7 @@
       margin: 0;
       padding: 0;
     }
+
     html, body {
       background: #000;
       color: #33ff33;
@@ -18,24 +19,27 @@
       height: 100%;
       overflow: hidden;
     }
+
     .terminal-wrapper {
       position: relative;
       width: 100vw;
-      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100); /* использование адаптивной высоты */
       overflow: hidden;
     }
+
     .terminal-container {
       position: absolute;
       top: 0;
       left: 0;
       width: 100vw;
-      height: 100vh;
-      overflow-y: scroll;
+      height: calc(var(--vh, 1vh) * 100); /* тоже адаптивная высота */
+      overflow-y: auto;
       overflow-x: hidden;
       padding: 8px;
       padding-right: 25px;
       box-sizing: content-box;
     }
+
     .terminal {
       font-size: 14px;
       white-space: pre-wrap;
@@ -44,56 +48,54 @@
       width: 100%;
       padding-right: 8px;
     }
-    .error-block {
-      font-family: 'Courier New', 'Monaco', monospace;
-      white-space: pre-wrap;
-      line-height: 1.2;
-      margin-top: 1em;
-      margin-bottom: 1em;
-    }
-    .error-table {
-      font-family: 'Courier New', 'Monaco', monospace;
-      white-space: pre;
-      line-height: 1.0;
-      margin-top: 1em;
-      margin-bottom: 1em;
-    }
-    .error-line {
-      display: block;
-    }
+
     .cursor {
       display: inline-block;
       animation: blink 1s step-end infinite;
     }
+
     @keyframes blink {
-      50% { opacity: 0; }
+      50% {
+        opacity: 0;
+      }
     }
-    
-    /* Адаптивный размер шрифта */
+
     @media (max-width: 768px) {
       .terminal {
         font-size: 12px;
       }
     }
-    
+
     @media (max-width: 480px) {
       .terminal {
         font-size: 10px;
       }
+
       .terminal-container {
         padding: 4px;
         padding-right: 25px;
       }
     }
-    
+
     @media (max-width: 360px) {
       .terminal {
         font-size: 9px;
       }
     }
   </style>
+
+  <!-- Адаптивное определение высоты экрана -->
+  <script>
+    function setVh() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('load', setVh);
+    window.addEventListener('resize', setVh);
+  </script>
 </head>
 <body>
+
 <div class="terminal-wrapper">
   <div class="terminal-container">
     <div class="terminal" id="terminal">
@@ -105,7 +107,7 @@
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
   const initBlock = [
-    "GALACTIC SUPPORT CENTER v2.1.6", 
+    "GALACTIC SUPPORT CENTER v2.1.8", 
     "COPYRIGHT (C) 3108 UNIVERSAL TECH CORP.", 
     "ALL PROCEDURES EVENTUALLY FAIL™",
     "------------------------------------------------------------",
@@ -207,7 +209,7 @@
       errorDiv.appendChild(lineDiv);
       errorLine++;
       scrollToBottom();
-      setTimeout(printErrorTable, 150 + Math.random() * 200);
+      setTimeout(printErrorTable, 70 + Math.random() * 200);
     } else {
       setTimeout(startTyping, 300);
     }
@@ -233,7 +235,7 @@
     if (charIndex < line.length) {
       insertChar(line.charAt(charIndex));
       charIndex++;
-      setTimeout(startTyping, 70 + Math.random() * 250);
+      setTimeout(startTyping, 70 + Math.random() * 150);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
   
@@ -455,7 +457,7 @@ function displayGuideLines(index = 0) {
   div.textContent = guideLines[index];
   terminal.insertBefore(div, cursor);
   scrollToBottom();
-  setTimeout(() => displayGuideLines(index + 1), 80 + Math.random() * 180);
+  setTimeout(() => displayGuideLines(index + 1), 80 + Math.random() * 480);
 }
 
 window.addEventListener('keydown', (e) => {
