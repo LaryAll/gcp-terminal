@@ -105,7 +105,7 @@
   const terminal = document.getElementById("terminal");
   const cursor = document.querySelector(".cursor");
   const initBlock = [
-    "GALACTIC SUPPORT CENTER v2.1.5", 
+    "GALACTIC SUPPORT CENTER v2.1.6", 
     "COPYRIGHT (C) 3108 UNIVERSAL TECH CORP.", 
     "ALL PROCEDURES EVENTUALLY FAIL™",
     "------------------------------------------------------------",
@@ -233,7 +233,7 @@
     if (charIndex < line.length) {
       insertChar(line.charAt(charIndex));
       charIndex++;
-      setTimeout(startTyping, 70 + Math.random() * 550);
+      setTimeout(startTyping, 70 + Math.random() * 250);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
   
@@ -436,7 +436,7 @@ const guideLines = [
   " ",
   " ",
   " ",
-  " "
+  " _"
 ];
 
 function showContextPrompt() {
