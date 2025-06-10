@@ -16,7 +16,7 @@
       font-family: 'Courier New', 'Monaco', monospace;
       line-height: 1;
       height: 100vh;
-      overflow: hidden;
+      overflow-x: hidden;
     }
     .terminal-container {
       height: 100vh;
@@ -24,19 +24,18 @@
       overflow-x: hidden;
       padding: 8px;
       -webkit-overflow-scrolling: touch;
+      width: 100%;
     }
     .terminal {
-      font-size: clamp(10px, 2.8vw, 16px);
+      font-size: 14px;
       white-space: pre-wrap;
       word-wrap: break-word;
       text-align: left;
+      width: 100%;
     }
     .error-block {
       font-family: 'Courier New', 'Monaco', monospace;
-      white-space: pre;
-      display: grid;
-      grid-template-columns: 1fr;
-      justify-items: start;
+      white-space: pre-wrap;
       line-height: 1.2;
       margin-top: 1em;
       margin-bottom: 1em;
@@ -44,27 +43,14 @@
     .error-table {
       font-family: 'Courier New', 'Monaco', monospace;
       white-space: pre;
-      display: grid;
-      grid-template-columns: 1fr;
-      justify-items: start;
+      line-height: 1.0;
       margin-top: 1em;
       margin-bottom: 1em;
-    }
-    .error-table .error-line {
-      display: block;
-      width: max-content;
-      line-height: 1.0 !important;
-      margin: 0;
-      padding: 0;
-      max-width: 100%;
-      overflow-wrap: break-word;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .error-line {
       display: block;
-      width: max-content;
-      line-height: inherit;
-      max-width: 100%;
-      overflow-wrap: break-word;
     }
     .cursor {
       display: inline-block;
@@ -73,24 +59,26 @@
     @keyframes blink {
       50% { opacity: 0; }
     }
-    @media (min-width: 768px) {
-      .terminal-container {
-        padding: 16px;
+    
+    /* Адаптивный размер шрифта */
+    @media (max-width: 768px) {
+      .terminal {
+        font-size: 12px;
       }
     }
+    
     @media (max-width: 480px) {
-      .error-line {
-        width: 100% !important;
-        max-width: 100% !important;
-        word-break: break-all;
-      }
-      .error-table .error-line {
-        width: 100% !important;
-        max-width: 100% !important;
-        word-break: break-all;
-      }
       .terminal {
-        font-size: clamp(8px, 3.5vw, 14px);
+        font-size: 10px;
+      }
+      .terminal-container {
+        padding: 4px;
+      }
+    }
+    
+    @media (max-width: 360px) {
+      .terminal {
+        font-size: 9px;
       }
     }
   </style>
@@ -113,9 +101,9 @@
     "> PINGING CENTRAL DATA ORACLE...................... 127ms",
     "> INITIALIZING BIG ABSTRACT GLUCOPEDIA [B.A.G.].... LOADED",
     "> LOADING CORE DRIVERS:",
-    "    — Quantum Printer Driver............... OK",
-    "    — Logical Compliance Layer............. OK",
-    "    — Empathy Processing Unit.............. OK",
+    "    — Quantum Printer Driver.................. OK",
+    "    — Logical Compliance Layer................ OK",
+    "    — Empathy Processing Unit................. OK",
     "> MOUNTING PERCEPTION VOLUMES...................... PARTIALLY",
     "> RESYNCHRONIZING TEMPORAL CACHE................... FAILED",
     "> STARTING BACKGROUND SERVICES..................... FAILED",
@@ -161,6 +149,7 @@
   let blockDiv;
   let errorDiv;
   let glucopediaWait = false;
+  
   function printInitLine() {
     if (initLine === 0) {
       blockDiv = document.createElement('div');
@@ -191,6 +180,7 @@
       setTimeout(printErrorTable, 2000);
     }
   }
+  
   function printErrorTable() {
     if (errorLine === 0) {
       errorDiv = document.createElement('div');
@@ -209,6 +199,7 @@
       setTimeout(startTyping, 1200);
     }
   }
+  
   let postIndex = 0;
   let charIndex = 0;
   function startTyping() {
@@ -226,13 +217,16 @@
     }
     scrollToBottom();
   }
+  
   function insertChar(char) {
     cursor.before(char);
   }
+  
   function scrollToBottom() {
     const container = document.querySelector('.terminal-container');
     container.scrollTop = container.scrollHeight;
   }
+  
   printInitLine();
 </script>
 </body>
