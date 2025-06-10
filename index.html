@@ -7,11 +7,11 @@
   <style>
     html, body {
       margin: 0;
-      padding: 40px;
+      padding: 10px;
       background-color: #000000;
       color: #33FF33;
       font-family: 'Courier New', Courier, monospace;
-      font-size: 16px;
+      font-size: 14px;
       line-height: 1.6;
       white-space: pre-wrap;
       height: 100vh;
@@ -20,17 +20,17 @@
       justify-content: center;
       align-items: flex-start;
     }
-
     .terminal {
       max-width: 1000px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
     }
-
     .cursor {
       display: inline-block;
       font-weight: bold;
       animation: blink 1s step-end infinite;
     }
-
     @keyframes blink {
       from, to { opacity: 1; }
       50% { opacity: 0; }
@@ -50,22 +50,26 @@
   cursor.textContent = "_";
   terminal.appendChild(cursor);
 
+  let allowSound = false;
+  document.addEventListener("click", () => { allowSound = true; }, { once: true });
+
   const errorBlock = [
-    "*********************** CRITICAL ERROR ***********************",
-    "*                                                            *",
-    "*  ERROR CODE     : QSR-404/∞                                *",
-    "*  DESCRIPTION    : SYSTEM OFFLINE-CONTROL NODE UNRESPONSIVE *",
-    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]          *",
-    "*                                                            *",
-    "*  TICKET REF     : #GCP-α-0001                              *",
-    "*  DISTRIBUTION   : ACTIVE                                   *",
-    "*  PRIORITY       : FLOATING                                 *",
-    "*  NEXT UNIT      : UNASSIGNED                               *",
-    "*                                                            *",
-    "*  PLEASE STANDBY                                            *",
-    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)                  *",
-    "*                                                            *",
-    "**************************************************************"
+    "******************* CRITICAL ERROR ********************",
+    "*                                                    *",
+    "*  ERROR CODE     : QSR-404/∞                        *",
+    "*  DESCRIPTION    : SYSTEM OFFLINE                   *",
+    "*  NODE RESPONSE  : UNREACHABLE                      *",
+    "*  TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]  *",
+    "*                                                    *",
+    "*  TICKET REF     : #GCP-α-0001                      *",
+    "*  DISTRIBUTION   : ACTIVE                           *",
+    "*  PRIORITY       : FLOATING                         *",
+    "*  NEXT UNIT      : UNASSIGNED                       *",
+    "*                                                    *",
+    "*  PLEASE STANDBY                                    *",
+    "*  AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)          *",
+    "*                                                    *",
+    "******************************************************"
   ];
 
   const postTyping = [
@@ -75,14 +79,14 @@
     "> VERIFYING ACCESS LEVEL [user: UNREGISTERED CONTRACTOR]",
     "> CONNECTION STALLED...",
     "",
-    "> SYSTEM HAS ENTERED OBSERVATION MODE",
-    "> TICKET #GLX-001 HAS BEEN FLAGGED FOR REDISTRIBUTION",
-    "> ESTIMATED RECEIVER: your (unremarkable but persistent) team",
+    "> SYSTEM ENTERED OBSERVATION MODE",
+    "> TICKET #GLX-001 FLAGGED FOR REDISTRIBUTION",
+    "> EST. RECIPIENT: your (unremarkable but persistent) team",
     "",
-    "> Please await manual assignment from Operator ZL-42",
-    "> In case of eternal delay, consult Form Processing Entity 9/B",
+    "> Awaiting manual handling by Operator ZL-42...",
+    "> For infinite delay, contact Form Processing Entity 9/B",
     "",
-    "> Likelihood of successful resolution: ¯\\_(ツ)_/¯",
+    "> Likelihood of resolution: ¯\\_(ツ)_/¯",
     "",
     ""
   ];
@@ -94,10 +98,10 @@
       terminal.insertBefore(document.createTextNode(errorBlock[errorLineIndex]), cursor);
       terminal.insertBefore(document.createElement("br"), cursor);
       errorLineIndex++;
-      const delay = 150 + Math.random() * 150;  // 150–500ms
+      const delay = 150 + Math.random() * 150;
       setTimeout(showErrorBlockLine, delay);
     } else {
-      setTimeout(startPostTyping, 900);
+      setTimeout(startPostTyping, 600);
     }
   }
 
@@ -106,28 +110,30 @@
 
   function startPostTyping() {
     if (postLine >= postTyping.length) return;
-
     const line = postTyping[postLine];
     if (postChar < line.length) {
       cursor.before(line.charAt(postChar));
       postChar++;
 
-      try {
-        audio.currentTime = 0;
-        audio.play();
-      } catch (e) {}
+      if (allowSound && audio) {
+        try {
+          audio.currentTime = 0;
+          audio.play();
+        } catch (e) {}
+      }
 
-      const delay = 40 + Math.random() * 25;  // ~40–65ms пер символ
+      const delay = 40 + Math.random() * 25;
       setTimeout(startPostTyping, delay);
     } else {
       terminal.insertBefore(document.createElement("br"), cursor);
       postLine++;
       postChar = 0;
-      setTimeout(startPostTyping, 300);
+      setTimeout(startPostTyping, 350);
     }
   }
 
   showErrorBlockLine();
 </script>
+
 </body>
 </html>
