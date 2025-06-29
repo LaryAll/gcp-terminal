@@ -248,6 +248,21 @@
     }
     window.addEventListener('load', setVh);
     window.addEventListener('resize', setVh);
+    
+    // Обработчик изменения размера окна для адаптивного блока ошибки
+    window.addEventListener('resize', () => {
+      if (errorDiv && errorDiv.children.length > 0) {
+        // Пересоздаем блок ошибки при изменении размера
+        const adaptiveErrorBlock = createAdaptiveErrorBlock();
+        errorBlock.length = 0;
+        errorBlock.push(...adaptiveErrorBlock);
+        
+        // Обновляем отображение
+        errorDiv.innerHTML = '';
+        errorLine = 0;
+        printErrorTable();
+      }
+    });
   </script>
 </head>
 <body>
@@ -357,6 +372,10 @@
       errorDiv = document.createElement('div');
       errorDiv.className = 'error-table';
       terminal.insertBefore(errorDiv, cursor);
+      // Создаем адаптивный блок ошибки
+      const adaptiveErrorBlock = createAdaptiveErrorBlock();
+      errorBlock.length = 0; // Очищаем старый блок
+      errorBlock.push(...adaptiveErrorBlock); // Добавляем новый адаптивный блок
     }
     if (errorLine < errorBlock.length) {
       const lineDiv = document.createElement('div');
@@ -707,6 +726,42 @@ function playTypeSound() {
     // Игнорируем ошибки звука
     console.log('Audio not supported');
   }
+}
+
+// Функция для создания адаптивного блока ошибки
+function createAdaptiveErrorBlock() {
+  const terminalWidth = Math.floor((window.innerWidth - 40) / 8); // Примерная ширина в символах
+  const borderChar = "*";
+  const paddingChar = " ";
+  
+  const createLine = (content) => {
+    const contentLength = content.length;
+    const padding = Math.max(0, terminalWidth - contentLength - 2);
+    const leftPadding = Math.floor(padding / 2);
+    const rightPadding = padding - leftPadding;
+    return borderChar + paddingChar.repeat(leftPadding) + content + paddingChar.repeat(rightPadding) + borderChar;
+  };
+  
+  const createBorderLine = () => borderChar.repeat(terminalWidth);
+  
+  return [
+    createBorderLine(),
+    createLine(""),
+    createLine("ERROR CODE     : QSR-404/∞"),
+    createLine("DESCRIPTION    : SYSTEM OFFLINE"),
+    createLine("NODE RESPONSE  : UNREACHABLE"),
+    createLine("TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]"),
+    createLine(""),
+    createLine("TICKET REF     : #GCP-α-0001"),
+    createLine("DISTRIBUTION   : ACTIVE"),
+    createLine("PRIORITY       : FLOATING"),
+    createLine("NEXT UNIT      : UNASSIGNED"),
+    createLine(""),
+    createLine("PLEASE STANDBY"),
+    createLine("AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)"),
+    createLine(""),
+    createBorderLine()
+  ];
 }
 
 </script>
