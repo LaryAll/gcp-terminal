@@ -88,13 +88,13 @@
       height: calc(var(--vh, 1vh) * 100);
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 10px; /* Увеличенные отступы для лучшего UX */
-      padding-right: 25px; /* Больше места для скроллбара */
+      padding: 8px;
+      padding-right: 20px;
       box-sizing: content-box;
     }
 
     .terminal {
-      font-size: 14px; /* Увеличенный размер для лучшей читаемости */
+      font-size: 14px;
       white-space: pre-wrap;
       word-wrap: break-word;
       text-align: left;
@@ -105,7 +105,6 @@
       /* Уменьшенная размытость для имитации CRT */
       filter: blur(0.2px);
       position: relative;
-      line-height: 1.2; /* Улучшенный межстрочный интервал для мобильных */
     }
 
     .cursor {
@@ -210,32 +209,24 @@
 
     @media (max-width: 768px) {
       .terminal {
-        font-size: 13px; /* Оптимальный размер для планшетов */
-        line-height: 1.25; /* Немного больше интервал для планшетов */
+        font-size: 12px;
       }
     }
 
     @media (max-width: 480px) {
       .terminal {
-        font-size: 13px; /* Хороший размер для мобильных */
-        line-height: 1.3; /* Увеличенный интервал для сенсорных экранов */
+        font-size: 10px;
       }
 
       .terminal-container {
-        padding: 6px; /* Немного больше отступы для мобильных */
-        padding-right: 18px;
+        padding: 4px;
+        padding-right: 15px; /* Уменьшенные отступы */
       }
     }
 
     @media (max-width: 360px) {
       .terminal {
-        font-size: 12px; /* Минимальный размер для очень маленьких экранов */
-        line-height: 1.35; /* Максимальный интервал для удобства */
-      }
-      
-      .terminal-container {
-        padding: 4px;
-        padding-right: 15px;
+        font-size: 9px;
       }
     }
   </style>
@@ -248,21 +239,6 @@
     }
     window.addEventListener('load', setVh);
     window.addEventListener('resize', setVh);
-    
-    // Обработчик изменения размера окна для адаптивного блока ошибки
-    window.addEventListener('resize', () => {
-      if (errorDiv && errorDiv.children.length > 0) {
-        // Пересоздаем блок ошибки при изменении размера
-        const adaptiveErrorBlock = createAdaptiveErrorBlock();
-        errorBlock.length = 0;
-        errorBlock.push(...adaptiveErrorBlock);
-        
-        // Обновляем отображение
-        errorDiv.innerHTML = '';
-        errorLine = 0;
-        printErrorTable();
-      }
-    });
   </script>
 </head>
 <body>
@@ -372,10 +348,6 @@
       errorDiv = document.createElement('div');
       errorDiv.className = 'error-table';
       terminal.insertBefore(errorDiv, cursor);
-      // Создаем адаптивный блок ошибки
-      const adaptiveErrorBlock = createAdaptiveErrorBlock();
-      errorBlock.length = 0; // Очищаем старый блок
-      errorBlock.push(...adaptiveErrorBlock); // Добавляем новый адаптивный блок
     }
     if (errorLine < errorBlock.length) {
       const lineDiv = document.createElement('div');
@@ -726,42 +698,6 @@ function playTypeSound() {
     // Игнорируем ошибки звука
     console.log('Audio not supported');
   }
-}
-
-// Функция для создания адаптивного блока ошибки
-function createAdaptiveErrorBlock() {
-  const terminalWidth = Math.floor((window.innerWidth - 40) / 8); // Примерная ширина в символах
-  const borderChar = "*";
-  const paddingChar = " ";
-  
-  const createLine = (content) => {
-    const contentLength = content.length;
-    const padding = Math.max(0, terminalWidth - contentLength - 2);
-    const leftPadding = Math.floor(padding / 2);
-    const rightPadding = padding - leftPadding;
-    return borderChar + paddingChar.repeat(leftPadding) + content + paddingChar.repeat(rightPadding) + borderChar;
-  };
-  
-  const createBorderLine = () => borderChar.repeat(terminalWidth);
-  
-  return [
-    createBorderLine(),
-    createLine(""),
-    createLine("ERROR CODE     : QSR-404/∞"),
-    createLine("DESCRIPTION    : SYSTEM OFFLINE"),
-    createLine("NODE RESPONSE  : UNREACHABLE"),
-    createLine("TIMESTAMP      : [0000.∞.GALACTIC STANDARD TIME]"),
-    createLine(""),
-    createLine("TICKET REF     : #GCP-α-0001"),
-    createLine("DISTRIBUTION   : ACTIVE"),
-    createLine("PRIORITY       : FLOATING"),
-    createLine("NEXT UNIT      : UNASSIGNED"),
-    createLine(""),
-    createLine("PLEASE STANDBY"),
-    createLine("AN OPERATOR HAS BEEN NOTIFIED (PROBABLY)"),
-    createLine(""),
-    createBorderLine()
-  ];
 }
 
 </script>
